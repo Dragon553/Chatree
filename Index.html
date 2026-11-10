@@ -21,6 +21,11 @@
                 <a href="#reviews">Reviews</a>
                 <a href="#contact">Contact</a>
             </nav>
+            <form class="nav-search" role="search" id="service-search-form">
+                <label class="sr-only" for="service-search">Search services</label>
+                <input id="service-search" type="search" placeholder="Search services..." aria-controls="services-grid">
+                <button type="submit">Search</button>
+            </form>
             <div class="header-actions">
                 <a href="login.html" class="btn btn-secondary header-btn">Login</a>
                 <a href="register.html" class="btn btn-primary header-btn">Register</a>
@@ -102,7 +107,7 @@
                     <p>From day-to-day support to strategic digital transformation, we help your team stay productive and protected.</p>
                 </div>
 
-                <div class="services-grid">
+                <div class="services-grid" id="services-grid">
                     <article class="service-card">
                         <div class="icon-box">🛡️</div>
                         <h3>Cybersecurity</h3>
@@ -124,6 +129,7 @@
                         <a href="#contact" class="link-arrow">Get support →</a>
                     </article>
                 </div>
+                <p class="search-status" id="service-search-status" role="status" aria-live="polite"></p>
             </div>
         </section>
 
@@ -289,5 +295,33 @@
             </div>
         </div>
     </footer>
+    <script>
+        const searchForm = document.querySelector("#service-search-form");
+        const searchInput = document.querySelector("#service-search");
+        const searchStatus = document.querySelector("#service-search-status");
+        const serviceCards = Array.from(document.querySelectorAll("#services-grid .service-card"));
+
+        searchInput.addEventListener("input", () => {
+            const query = searchInput.value.trim().toLocaleLowerCase();
+            let visibleCount = 0;
+
+            serviceCards.forEach((card) => {
+                const matches = card.textContent.toLocaleLowerCase().includes(query);
+                card.hidden = !matches;
+                visibleCount += Number(matches);
+            });
+
+            searchStatus.textContent = query
+                ? visibleCount
+                    ? `Showing ${visibleCount} of ${serviceCards.length} services.`
+                    : `No services found for "${searchInput.value.trim()}".`
+                : "";
+        });
+
+        searchForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            document.querySelector("#services").scrollIntoView({ behavior: "smooth" });
+        });
+    </script>
 </body>
 </html>
